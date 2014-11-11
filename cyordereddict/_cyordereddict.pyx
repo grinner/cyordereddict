@@ -5,10 +5,17 @@ from keyword import iskeyword as _iskeyword
 import sys as _sys
 import heapq as _heapq
 from itertools import repeat as _repeat, chain as _chain, starmap as _starmap
-from itertools import imap as _imap
+
+IF IS_PY_THREE == 1:
+    _imap = map
+ELSE:
+    from itertools import imap as _imap
 
 try:
-    from thread import get_ident as _get_ident
+    IF IS_PY_THREE == 1:
+        from _thread import get_ident as _get_ident
+    ELSE:
+        from thread import get_ident as _get_ident
 except ImportError:
     from dummy_thread import get_ident as _get_ident
 

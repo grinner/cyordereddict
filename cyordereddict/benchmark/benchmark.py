@@ -1,6 +1,6 @@
 import cyordereddict
 
-from .magic_timeit import magic_timeit
+from .magic_timeit import magic_timeit, is_py2
 
 
 MODULES = ['cyordereddict', 'collections']
@@ -24,11 +24,10 @@ BENCHMARKS = [
     ('``__contains__``', "100 in ordereddict"),
 ]
 
-
 def _setup_ns(module):
     ns = globals().copy()
     setup = SETUP_TEMPLATE.format(module=module)
-    exec setup in ns
+    exec(setup, ns)
     return ns
 
 

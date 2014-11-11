@@ -35,11 +35,17 @@ if use_cython and not has_cython:
     print('WARNING: Cython not installed.  Building without Cython.')
     use_cython = False
 
+is_py_3 = int(sys.version_info[0] > 2)
+
 ext = '.pyx' if use_cython else '.c'
 source = os.path.join("cyordereddict", "_cyordereddict")
-ext_modules = [Extension("cyordereddict._cyordereddict", [source + ext])]
+ext_modules = [Extension("cyordereddict._cyordereddict", 
+                [source + ext], 
+                extra_compile_args=['-Wno-unused-function'])
+                ]
 if use_cython:
-    ext_modules = cythonize(ext_modules)
+    ext_modules = cythonize(ext_modules, 
+                            compile_time_env={'IS_PY_THREE': is_py_3})
 
 if __name__ == '__main__':
     setup(

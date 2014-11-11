@@ -2,7 +2,8 @@
 # https://github.com/pydata/vbench/blob/master/vbench/benchmark.py
 
 # Modified from IPython project, http://ipython.org
-
+import sys
+is_py2 = True if int(sys.version[0]) < 3 else False
 
 def magic_timeit(ns, stmt, ncalls=None, repeat=3, force_ms=False):
     """Time execution of a Python statement or expression
@@ -54,13 +55,19 @@ def magic_timeit(ns, stmt, ncalls=None, repeat=3, force_ms=False):
     # but is there a better way to achieve that the code stmt has access
     # to the shell namespace?
 
-    src = timeit.template % {'stmt': timeit.reindent(stmt, 8),
-                             'setup': "pass"}
+    if is_py2:
+        src = timeit.template % {'stmt': timeit.reindent(stmt, 8),
+                                 'setup': "pass"}
+    else:
+        src = timeit.template.format(stmt=timeit.reindent(stmt, 8), 
+                                        setup='pass')
+
+
     # Track compilation time so it can be reported if too long
     # Minimum time above which compilation time will be reported
     code = compile(src, "<magic-timeit>", "exec")
 
-    exec code in ns
+    exec(code, ns)
     timer.inner = ns["inner"]
 
     if ncalls is None:
